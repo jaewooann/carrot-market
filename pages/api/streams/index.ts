@@ -33,11 +33,18 @@ async function handler(
       const streams = await client.stream.findMany({});
       res.json({ ok: true, streams });
     } else {
-      const streams = await client.stream.findMany({
-        take: 20,
-        skip: 20 * (+page! - 1),
+      const allStreamList = await client.stream.findMany({
+        orderBy: {
+          id: "asc",
+        },
       });
-      res.json({ ok: true, streams });
+      const streamCount = Math.ceil(allStreamList.length / 10);
+
+      const streams = await client.stream.findMany({
+        take: 10,
+        skip: (Number(page) - 1) * 10,
+      });
+      res.json({ ok: true, streams, streamCount });
     }
   }
 }
