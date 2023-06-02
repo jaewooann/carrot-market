@@ -5,6 +5,7 @@ import useUser from "@/libs/client/useUser";
 import type { ChatMessage, ChatRoom, User } from "@prisma/client";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
 
@@ -38,8 +39,9 @@ interface MessageForm {
 }
 
 const ChatDetail: NextPage = () => {
-  const { user } = useUser();
   const router = useRouter();
+  const { user } = useUser();
+  const [onToggle, setOnToggle] = useState(false);
   const { register, handleSubmit, reset } = useForm<MessageForm>();
   const { data, mutate } = useSWR<ChatRoomResponse>(
     router.query.id ? `/api/chats/${router.query.id}` : null
@@ -71,8 +73,43 @@ const ChatDetail: NextPage = () => {
     sendMessage(form);
   };
 
+  const onClickReserToggle = () => {
+    setOnToggle((prev) => !prev);
+  };
+
+  const onClickGoToReview = () => {
+    void router.push(
+      `/review?createdById=${data?.chatRoom.hostId}&createdForId=${data?.chatRoom.invitedId}`
+    );
+  };
+
   return (
     <Layout title={String(data?.chatRoom.product.name)} canGoBack>
+      <div className="border-y-[1px]">
+        {onToggle ? (
+          <>
+            <button
+              onClick={onClickReserToggle}
+              className="inline-block my-5 p-2 rounded-md bg-red-500 text-white cursor-pointer hover:bg-red-600 text-sm"
+            >
+              예약취소
+            </button>
+            <button
+              onClick={onClickGoToReview}
+              className="inline-block ml-2 my-5 p-2 rounded-md bg-orange-500 text-white cursor-pointer hover:bg-orange-600 text-sm"
+            >
+              리뷰작성
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={onClickReserToggle}
+            className="inline-block my-5 p-2 rounded-md bg-green-500 text-white cursor-pointer hover:bg-green-600 text-sm"
+          >
+            예약하기
+          </button>
+        )}
+      </div>
       <div className="py-10 px-4 space-y-4">
         {data?.chatRoom?.chatMessages?.map((chatMessage) => (
           <Message
