@@ -111,7 +111,10 @@ const Profile: NextPage = () => {
         {data?.reviews?.map((review) => (
           <div key={review.id} className="mt-12">
             <div className="flex space-x-4 items-center">
-              <div className="w-12 h-12 rounded-full bg-slate-400" />
+              <img
+                src={`https://imagedelivery.net/0aY6xndKFx99spTzlmzBtQ/${review?.createdBy?.avatar}/avatar`}
+                className="w-12 h-12 rounded-full bg-slate-400"
+              />
               <div>
                 <h4 className="text-sm- font-bold text-gray-800">
                   {review?.createdBy?.name}

@@ -8,6 +8,7 @@ import type { NextPage } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import useSWR, { useSWRConfig } from "swr";
 
 interface ProductWithUser extends Product {
@@ -19,6 +20,11 @@ interface ItemDetailResponse {
   product: ProductWithUser;
   relatedProduct: Product[];
   isLiked: boolean;
+}
+
+interface ChatRoomResponse {
+  ok: boolean;
+  chatRoomId: string;
 }
 
 const ItemDetail: NextPage = () => {
@@ -38,6 +44,23 @@ const ItemDetail: NextPage = () => {
     // void mutate("/api/users/me", (prev: any) => ({ ok: !prev.ok }), false);
     toggleFav({});
   };
+
+  const [createChatRoom, { data: chatRoomData, loading }] =
+    useMutation<ChatRoomResponse>(
+      `/api/chats?productId=${data?.product.id}&invitedId=${data?.product.userId}`
+    );
+  console.log(data?.product.userId);
+  const onClickTalkToSeller = () => {
+    if (loading) return;
+    createChatRoom({});
+    console.log(createChatRoom);
+  };
+  useEffect(() => {
+    if (chatRoomData?.ok) {
+      void router.push(`/chats/${chatRoomData?.chatRoomId}`);
+    }
+  }, [chatRoomData, router]);
+
   return (
     <Layout canGoBack>
       <div className="px-4 py-10">
@@ -83,13 +106,13 @@ const ItemDetail: NextPage = () => {
               {data?.product?.name ?? "loading"}
             </h1>
             <span className="text-3xl block mt-3 text-gray-900">
-              {data?.product?.price ?? "loading"}
+              ₩{data?.product?.price ?? "loading"}
             </span>
             <p className="text-base my-6 text-gray-700">
               {data?.product?.description ?? "loading"}
             </p>
             <div className="flex items-center justify-between space-x-2">
-              <Button text={"Talk to seller"} />
+              <Button onClick={onClickTalkToSeller} text={"Talk to seller"} />
               <button
                 onClick={onFavClick}
                 className={cls(
