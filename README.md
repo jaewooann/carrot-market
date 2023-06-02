@@ -11,4 +11,5 @@ Next.js로 제작한 '당근마켓' 앱 풀스택 클론코딩 (프론트엔드,
 ● Planet Scale 사용 <br />
 ● Cloutflare Images 사용 <br />
 ● Twilio 사용 <br />
-● Sendgrid 사용
+● Sendgrid 사용 <br />
+● middleware 사용
