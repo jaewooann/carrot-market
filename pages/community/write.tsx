@@ -25,7 +25,7 @@ const Write: NextPage = () => {
   const [post, { loading, data }] = useMutation<WriteResponse>("/api/posts");
   const onValid = (data: WriteForm) => {
     if (loading) return;
-    post({...data, latitude, longitude});
+    post({ ...data, latitude, longitude });
   };
   useEffect(() => {
     if (data?.ok) {
@@ -33,7 +33,7 @@ const Write: NextPage = () => {
     }
   }, [data, router]);
   return (
-    <Layout title="Write Post" canGoBack>
+    <Layout title="Write Post" canGoBack seoTitle="Write Post">
       <form onSubmit={handleSubmit(onValid)} className="px-4 py-4">
         <TextArea
           register={register("question", { required: true, minLength: 5 })}

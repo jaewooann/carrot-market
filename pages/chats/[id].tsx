@@ -84,7 +84,11 @@ const ChatDetail: NextPage = () => {
   };
 
   return (
-    <Layout title={String(data?.chatRoom.product.name)} canGoBack>
+    <Layout
+      title={String(data?.chatRoom.product.name)}
+      canGoBack
+      seoTitle="Chats Detail"
+    >
       <div className="border-y-[1px]">
         {onToggle ? (
           <>

@@ -5,7 +5,7 @@ import type { NextPage } from "next";
 
 const Loved: NextPage = () => {
   return (
-    <Layout title="관심목록" canGoBack>
+    <Layout title="관심목록" canGoBack seoTitle="Wish List">
       <div className="flex flex-col space-y-5 py-10 divide-y">
         <ProductList kind="favs" />
       </div>

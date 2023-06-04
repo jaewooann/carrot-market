@@ -40,7 +40,7 @@ const ReviewWrite: NextPage = () => {
   }, [data, router]);
 
   return (
-    <Layout title="Write A Review" canGoBack>
+    <Layout title="Write A Review" canGoBack seoTitle="Write A Review">
       <form onSubmit={handleSubmit(onValid)} className="px-4 py-4">
         <Input
           register={register("score", {

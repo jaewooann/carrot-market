@@ -23,7 +23,7 @@ interface ChatRoomsResponse {
 const Chats: NextPage = () => {
   const { data } = useSWR<ChatRoomsResponse>(`/api/chats`);
   return (
-    <Layout hasTabBar title="채팅방">
+    <Layout hasTabBar title="채팅방" seoTitle="Chats">
       <div className="py-10 divide-y-[1px]">
         {data?.chatRooms?.map((chatRoom) => (
           <Link href={`/chats/${chatRoom.id}`} key={chatRoom.id}>

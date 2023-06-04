@@ -38,7 +38,7 @@ const Create: NextPage = () => {
   }, [data, router]);
 
   return (
-    <Layout title="Go live" canGoBack>
+    <Layout title="Go live" canGoBack seoTitle="Create Stream">
       <form onSubmit={handleSubmit(onValid)} className="py-3 px-4 space-y-5">
         <Input
           register={register("name", { required: true })}
