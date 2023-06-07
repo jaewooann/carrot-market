@@ -13,6 +13,7 @@
     "@sendgrid/mail": "^7.7.0",
     "@tailwindcss/forms": "^0.5.3",
     "@types/nodemailer": "^6.4.7",
+    "gray-matter": "^4.0.3",
     "iron-session": "^6.3.1",
     "next": "13.4.1",
     "nodemailer": "^6.9.2",
@@ -20,9 +21,12 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.9",
     "react-loading-skeleton": "^3.3.1",
+    "remark-html": "^15.0.2",
+    "remark-parse": "^10.0.2",
     "swr": "^2.1.5",
     "ts-node": "^10.9.1",
-    "twilio": "^4.11.0"
+    "twilio": "^4.11.0",
+    "unified": "^10.1.2"
   },
   "devDependencies": {
     "@types/node": "20.1.2",

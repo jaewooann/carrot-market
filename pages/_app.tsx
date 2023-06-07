@@ -24,7 +24,7 @@ export default function App({ Component, pageProps }: AppProps): JSX.Element {
         src="https://developers.kakao.com/sdk/js/kakao.js"
         strategy="lazyOnload"
       />
-      <Script
+      {/* <Script
         src="https://connect.facebook.net/en_US/sdk.js"
         onLoad={() => {
           window.fbAsyncInit = function () {
@@ -36,7 +36,7 @@ export default function App({ Component, pageProps }: AppProps): JSX.Element {
             });
           };
         }}
-      />
+      /> */}
     </SWRConfig>
   );
 }

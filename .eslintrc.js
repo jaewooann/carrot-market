@@ -26,5 +26,7 @@ module.exports = {
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/consistent-indexed-object-style": "off",
     "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
+    "array-callback-return": "off",
+    "react/prop-types": "off",
   },
 };
