@@ -4,12 +4,13 @@ import useMutation from "@/libs/client/useMutation";
 import useUser from "@/libs/client/useUser";
 import { cls } from "@/libs/client/utils";
 import type { Product, User } from "@prisma/client";
-import type { NextPage } from "next";
+import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import useSWR, { useSWRConfig } from "swr";
+import client from "@/libs/server/client";
 
 interface ProductWithUser extends Product {
   user: User;
@@ -27,7 +28,11 @@ interface ChatRoomResponse {
   chatRoomId: string;
 }
 
-const ItemDetail: NextPage = () => {
+const ItemDetail: NextPage<ItemDetailResponse> = ({
+  product,
+  relatedProduct,
+  isLiked,
+}) => {
   const router = useRouter();
   const { user, isLoading } = useUser();
   const { mutate } = useSWRConfig();
@@ -60,16 +65,22 @@ const ItemDetail: NextPage = () => {
       void router.push(`/chats/${chatRoomData?.chatRoomId}`);
     }
   }, [chatRoomData, router]);
-
+  // if (router.isFallback) {
+  //   return (
+  //     <Layout title="Loading for youuuu" seoTitle="Loading Page">
+  //       <span>i love you</span>
+  //     </Layout>
+  //   );
+  // }
   return (
     <Layout canGoBack seoTitle="Product Detail">
       <div className="px-4 py-10">
         <div className="mb-8">
-          {data?.product.image && data?.product.image !== "xx" ? (
+          {product.image && product.image !== "xx" ? (
             <div className="relative pb-80">
               <Image
                 alt=" "
-                src={`https://imagedelivery.net/0aY6xndKFx99spTzlmzBtQ/${data?.product?.image}/public`}
+                src={`https://imagedelivery.net/0aY6xndKFx99spTzlmzBtQ/${product?.image}/public`}
                 className="bg-slate-300 object-cover"
                 layout="fill"
               />
@@ -78,13 +89,12 @@ const ItemDetail: NextPage = () => {
             <div className="w-full pb-80 bg-slate-300" />
           )}
           <div className="flex cursor-pointer py-3 border-t border-b items-center space-x-3">
-            {data?.product?.user?.avatar &&
-            data?.product?.user?.avatar !== "xx" ? (
+            {product?.user?.avatar && product?.user?.avatar !== "xx" ? (
               <Image
                 alt=" "
                 width={48}
                 height={48}
-                src={`https://imagedelivery.net/0aY6xndKFx99spTzlmzBtQ/${data?.product?.user?.avatar}/avatar`}
+                src={`https://imagedelivery.net/0aY6xndKFx99spTzlmzBtQ/${product?.user?.avatar}/avatar`}
                 className="w-12 h-12 rounded-full bg-slate-300"
               />
             ) : (
@@ -92,9 +102,9 @@ const ItemDetail: NextPage = () => {
             )}
             <div>
               <p className="text-sm font-medium text-gray-700">
-                {data?.product?.user?.name}
+                {product?.user?.name}
               </p>
-              <Link href={`/users/profiles/${data?.product?.user?.id}`}>
+              <Link href={`/users/profiles/${product?.user?.id}`}>
                 <p className="text-xs font-medium text-gray-500">
                   View profile &rarr;
                 </p>
@@ -103,13 +113,13 @@ const ItemDetail: NextPage = () => {
           </div>
           <div className="mt-5">
             <h1 className="text-3xl font-bold text-gray-900">
-              {data?.product?.name ?? "loading"}
+              {product?.name ?? "loading"}
             </h1>
             <span className="text-3xl block mt-3 text-gray-900">
-              ₩{data?.product?.price ?? "loading"}
+              ₩{product?.price ?? "loading"}
             </span>
             <p className="text-base my-6 text-gray-700">
-              {data?.product?.description ?? "loading"}
+              {product?.description ?? "loading"}
             </p>
             <div className="flex items-center justify-between space-x-2">
               <Button onClick={onClickTalkToSeller} text={"Talk to seller"} />
@@ -117,12 +127,12 @@ const ItemDetail: NextPage = () => {
                 onClick={onFavClick}
                 className={cls(
                   "p-3 rounded-md flex items-center justify-center hover:bg-gray-100",
-                  data?.isLiked
+                  isLiked
                     ? "text-red-500 hover:text-red-600"
                     : "text-gray-400 hover:text-gray-500"
                 )}
               >
-                {data?.isLiked ? (
+                {isLiked ? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -155,7 +165,7 @@ const ItemDetail: NextPage = () => {
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Similar items</h2>
           <div className="mt-6 grid grid-cols-2 gap-4">
-            {data?.relatedProduct?.map((product) => (
+            {relatedProduct?.map((product) => (
               <Link href={`/products/${product.id}`} key={product.id}>
                 <div>
                   <div className="h-56 mb-4 w-full bg-slate-300" />
@@ -171,6 +181,70 @@ const ItemDetail: NextPage = () => {
       </div>
     </Layout>
   );
+};
+
+export const getStaticPaths: GetStaticPaths = () => {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+};
+
+export const getStaticProps: GetStaticProps = async (ctx) => {
+  if (!ctx?.params?.id) {
+    return {
+      props: {},
+    };
+  }
+  const product = await client.product.findUnique({
+    where: {
+      id: Number(ctx.params.id),
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          avatar: true,
+        },
+      },
+    },
+  });
+  const terms = product?.name.split(" ").map((word) => ({
+    name: {
+      contains: word,
+    },
+  }));
+  const relatedProduct = await client.product.findMany({
+    where: {
+      OR: terms,
+      AND: {
+        id: {
+          not: product?.id,
+        },
+      },
+    },
+  });
+  // await new Promise((resolve) => setTimeout(resolve, 10000));
+  const isLiked = false;
+  // Boolean(
+  //   await client.fav.findFirst({
+  //     where: {
+  //       productId: product?.id,
+  //       userId: user?.id,
+  //     },
+  //     select: {
+  //       id: true,
+  //     },
+  //   })
+  // );
+  return {
+    props: {
+      product: JSON.parse(JSON.stringify(product)),
+      relatedProduct: JSON.parse(JSON.stringify(relatedProduct)),
+      isLiked,
+    },
+  };
 };
 
 export default ItemDetail;

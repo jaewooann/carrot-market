@@ -4,6 +4,9 @@ const nextConfig = {
   images: {
     domains: ["imagedelivery.net"],
   },
+  experimental: {
+    reactRoot: true,
+  },
 };
 
 module.exports = nextConfig;
