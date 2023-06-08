@@ -12,4 +12,5 @@ Next.js로 제작한 '당근마켓' 앱 풀스택 클론코딩 (프론트엔드,
 ● Cloutflare Images 사용 <br />
 ● Twilio 사용 <br />
 ● Sendgrid 사용 <br />
-● middleware 사용
+● middleware 사용 <br />
+● vercel 배포 (carrot-market-bice.vercel.app)
