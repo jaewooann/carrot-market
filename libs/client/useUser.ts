@@ -11,8 +11,8 @@ interface ProfileResponse {
 export default function useUser(pathname?: string) {
   const router = useRouter();
   const { data, error } = useSWR<ProfileResponse>(
-    pathname === "/enter" ? null : "/api/users/me",
-    (url: string) => fetch(url).then((res) => res.json())
+    // pathname === "/enter" ? null : "/api/users/me",
+    typeof window === "undefined" ? null : "/api/users/me"
   );
 
   useEffect(() => {

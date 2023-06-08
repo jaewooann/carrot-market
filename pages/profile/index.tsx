@@ -174,12 +174,10 @@ const Profile: NextPage = () => {
 const Page: NextPage = () => {
   return (
     <SWRConfig
-      value={
-        {
-          // suspense: true,
-          // fallbackData: { MiniProfile, Reviews },
-        }
-      }
+      value={{
+        suspense: true,
+        // fallbackData: { MiniProfile, Reviews },
+      }}
     >
       <Profile />
     </SWRConfig>
