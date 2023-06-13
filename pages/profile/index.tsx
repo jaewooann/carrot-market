@@ -171,20 +171,20 @@ const Profile: NextPage = () => {
   );
 };
 
-const Page: NextPage = () => {
-  return (
-    <SWRConfig
-      value={{
-        suspense: true,
-        // fallbackData: { MiniProfile, Reviews },
-      }}
-    >
-      <Profile />
-    </SWRConfig>
-  );
-};
+// const Page: NextPage = () => {
+//   return (
+//     <SWRConfig
+//       value={{
+//         suspense: true,
+//         // fallbackData: { MiniProfile, Reviews },
+//       }}
+//     >
+//       <Profile />
+//     </SWRConfig>
+//   );
+// };
 
-/* export const getServerSideProps = withSsrSession(async function ({
+export const getServerSideProps = withSsrSession(async function ({
   req,
 }: NextPageContext) {
   const profile = await client.user.findUnique({
@@ -195,6 +195,6 @@ const Page: NextPage = () => {
       profile: JSON.parse(JSON.stringify(profile)),
     },
   };
-}); */
+});
 
-export default Page;
+export default Profile;
